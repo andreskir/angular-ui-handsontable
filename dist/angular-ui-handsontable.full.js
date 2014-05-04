@@ -1,7 +1,7 @@
 /**
  * angular-ui-handsontable 0.3.17
  * 
- * Date: Sun May 04 2014 11:34:16 GMT-0300 (ART)
+ * Date: Sun May 04 2014 11:37:06 GMT-0300 (ART)
 */
 
 /**
@@ -29,7 +29,6 @@ angular.module('uiHandsontable', [])
             columns: [],
             colHeaders: true,
             outsideClickDeselects: true,
-            autoComplete: []
           },
           $container: $('<div class="ui-handsontable-container"></div>')
         };
