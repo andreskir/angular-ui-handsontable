@@ -56,91 +56,6 @@ angular.module('uiHandsontable', [])
       priority: 490,
       compile: function compile(tElement, tAttrs) {
 
-        var parseAutocomplete = function (scope, column, uiDatagrid) {
-          var expression = column.optionList
-            , match = expression.match(/^\s*(.+)\s+in\s+(.*)\s*$/);
-          if (!match) {
-            throw Error("Expected datarows in form of '_item_ in _collection_' but got '" +
-              expression + "'.");
-          }
-
-          var lhs = match[1]
-            , rhs = match[2]
-            , childScope = scope.$new()
-            , lastItems
-            , lastOptionScope
-            , deregister;
-
-          uiDatagrid.$container.on('blur', 'textarea', function () {
-            //need to deregister when focus is moved to another cell, typically when autocomplete editor is destroyed
-            //another way to do this would be to call deregister on (yet nonexistent) event destroyeditor.handsontable
-            if (deregister) {
-              deregister();
-            }
-          });
-
-          column.source = function (query, process) {
-            if (deregister) {
-              deregister();
-            }
-
-            var getItems = function () {
-              var htInstance = uiDatagrid.$container.data('handsontable');
-              var row = htInstance.getSelected()[0];
-              childScope[uiDatagrid.lhs] = scope.$parent.$eval(uiDatagrid.rhs)[row];
-              return childScope.$eval(rhs);
-            };
-
-            lastItems = getItems();
-            if (!childScope.$$phase) {
-              childScope.$apply();
-            }
-            process(lastItems);
-            lastOptionScope.$apply(); //without this, last option is never rendered. TODO: why?
-
-            deregister = scope.$parent.$watch(getItems, function (newVal, oldVal) {
-              if (newVal === oldVal) {
-                return;
-              }
-              setTimeout(function () {
-                column.source(query, process);
-              }, 0);
-            }/*, true*/);
-
-            if (!column.saveOnBlur) {
-              childScope.$eval(column.value + ' = "' + $.trim(query).replace(/"/g, '\"') + '"'); //refresh value after each key stroke
-              childScope.$apply();
-            }
-          };
-
-          column.sorter = function (items) {
-            return items;
-          };
-
-          column.highlighter = function (item) {
-            var el;
-            var optionScope = childScope.$new();
-            optionScope[lhs] = item;
-            lastOptionScope = optionScope;
-            if (column.transclude) {
-              column.transclude(optionScope, function (elem) {
-                el = elem[0];
-              });
-            }
-            else {
-              el = $compile('<span>' + column.optionTemplate + '</span>')(optionScope);
-            }
-            return el;
-          };
-
-          column.onSelect = function (row, col, prop, value, index) {
-            //index is the selection index in the menu
-            childScope[lhs] = lastItems[index];
-            childScope.$eval(column.clickrow);
-            childScope.$apply();
-          };
-        };
-
         var expression = tAttrs.datarows
           , match
           , lhs
@@ -182,9 +97,6 @@ angular.module('uiHandsontable', [])
             for (i = 0, ilen = uiDatagrid.settings.columns.length; i < ilen; i++) {
               uiDatagrid.settings.columns[i].data = uiDatagrid.settings.columns[i].value.replace(pattern, '');
 
-              if (uiDatagrid.settings.columns[i].type === 'autocomplete') {
-                parseAutocomplete(scope, uiDatagrid.settings.columns[i], uiDatagrid);
-              }
             }
           }
 
@@ -248,9 +160,6 @@ angular.module('uiHandsontable', [])
                   for (var i = 0, ilen = newVal.length; i < ilen; i++) {
                     newVal[i].data = newVal[i].value.replace(pattern, '');
 
-                    if (newVal[i].type === 'autocomplete') {
-                      parseAutocomplete(scope, newVal[i], uiDatagrid);
-                    }
                   }
                 }
 
@@ -301,14 +210,6 @@ angular.module('uiHandsontable', [])
           column.width = width;
 
           switch (type) {
-            case 'autocomplete':
-              for (i in uiDatagridColumn) {
-                if (uiDatagridColumn.hasOwnProperty(i)) {
-                  column[i] = uiDatagridColumn[i];
-                }
-              }
-              break;
-
             case 'checkbox':
               if (typeof attrs.checkedtemplate !== 'undefined') {
                 column.checkedTemplate = scope.$parent.$eval(attrs.checkedtemplate); //if undefined then defaults to Boolean true
