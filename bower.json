@@ -6,7 +6,7 @@
     "./dist/angular-ui-handsontable.full.css"
   ],
   "devDependencies": {
-    "handsontable": "~0.9.11"
+    "handsontable": "~0.10.5"
   },
   "dependencies": {
     "angular": "~1.0.7",
