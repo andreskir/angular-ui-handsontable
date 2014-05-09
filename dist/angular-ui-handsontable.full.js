@@ -1,7 +1,7 @@
 /**
  * angular-ui-handsontable 0.3.17
  * 
- * Date: Sun May 04 2014 11:23:51 GMT-0300 (ART)
+ * Date: Fri May 09 2014 11:51:23 GMT-0300 (ART)
 */
 
 /**
@@ -28,8 +28,7 @@ angular.module('uiHandsontable', [])
           settings: {
             columns: [],
             colHeaders: true,
-            outsideClickDeselects: true,
-            autoComplete: []
+            outsideClickDeselects: true
           },
           $container: $('<div class="ui-handsontable-container"></div>')
         };
@@ -427,6 +426,7 @@ angular.module('uiHandsontable', [])
     };
     return directiveDefinitionObject;
   });
+
 /**
  * Handsontable 0.10.5
  * Handsontable is a simple jQuery plugin for editable tables with basic copy-paste compatibility with Excel and Google Docs

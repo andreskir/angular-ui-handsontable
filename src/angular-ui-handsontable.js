@@ -12,8 +12,7 @@ angular.module('uiHandsontable', [])
           settings: {
             columns: [],
             colHeaders: true,
-            outsideClickDeselects: true,
-            autoComplete: []
+            outsideClickDeselects: true
           },
           $container: $('<div class="ui-handsontable-container"></div>')
         };
