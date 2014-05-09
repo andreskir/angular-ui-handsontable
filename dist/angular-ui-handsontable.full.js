@@ -1,7 +1,7 @@
 /**
  * angular-ui-handsontable 0.3.17
  * 
- * Date: Fri May 09 2014 11:51:23 GMT-0300 (ART)
+ * Date: Fri May 09 2014 12:07:59 GMT-0300 (ART)
 */
 
 /**
@@ -83,7 +83,6 @@ angular.module('uiHandsontable', [])
             , rhs = match[2]
             , childScope = scope.$new()
             , lastItems
-            , lastOptionScope
             , deregister;
 
           uiDatagrid.$container.on('blur', 'textarea', function () {
@@ -111,7 +110,6 @@ angular.module('uiHandsontable', [])
               childScope.$apply();
             }
             process(lastItems);
-            lastOptionScope.$apply(); //without this, last option is never rendered. TODO: why?
 
             deregister = scope.$parent.$watch(getItems, function (newVal, oldVal) {
               if (newVal === oldVal) {
@@ -136,7 +134,6 @@ angular.module('uiHandsontable', [])
             var el;
             var optionScope = childScope.$new();
             optionScope[lhs] = item;
-            lastOptionScope = optionScope;
             if (column.transclude) {
               column.transclude(optionScope, function (elem) {
                 el = elem[0];
